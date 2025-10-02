@@ -27,6 +27,7 @@ machineName=""
 hasIP=false
 youtubeLink=false
 byDifficult=false
+bySo=false
 main_url="https://htbmachines.github.io/bundle.js"
 
 # Función para normalizar dificultades
@@ -47,6 +48,7 @@ function helpPanel() {
   echo -e "\t 💻${purpleColour}-m${endColour}${grayColour} Nombre de la máquina Hack The Box${endColour}"
   echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Busca máquinas por dirección IP${endColour}"
   echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Lista máquinas por dificultad${endColour}"
+  echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Lista máquinas por sistema operativo${endColour}"
   echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Abre el enlace de YouTube de la máquina${endColour}"
   echo -e "\t ❓${purpleColour}-h${endColour}${grayColour} Muestra este panel de ayuda${endColour}"
   echo -e "\t 🔄${purpleColour}-u${endColour}${grayColour} Descarga o actualiza los archivos necesarios${endColour}\n"
@@ -184,9 +186,32 @@ function listMachinesByDifficult() {
   fi
   echo -e "\n 🔥 Ready To The Death 🔥\n"
 }
+# Función para listar nombres de máquinas con sistema operativo específico
+function listMachinesBySo() {
+  machinesBySo="$1"
+  normalized_so=$(normalize_difficulty "$machinesBySo")
+  echo -e "\n ${greenColour}[+] Listando máquinas con sistema operativo:${endColour} ${blueColour}$normalized_so${endColour}\n"
+  names=$(grep -i -B 5 "so: \"$normalized_so\"" bundle.js | grep "name:" | tr -d '"' | tr -d ',' | sed 's/^ *//' | sed 's/^name: *//')
+  if [ -z "$names" ]; then
+    echo -e "\n ${redColour}[!] No se encontraron máquinas con este sistema operativo:${endColour} ${blueColour}$normalized_so${endColour}\n"
+    exit 1
+  fi
+  echo "$names" | while read -r line; do
+    echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}"
+    sleep 1
+  done
+  echo -e "\n ${greenColour}[+] Quieres ver las propiedades de alguna${endColour}\n${yellowColour}[?] Escribe 'y' para sí o 'n' para no: ${endColour}"
+  read -r response
+  if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
+    echo -e "\n ${greenColour}[+] Escribe el nombre de la máquina:${endColour}\n"
+    read -r youtubeMachineName
+    searchMAchine "$youtubeMachineName"
+  fi
+  echo -e "\n 🔥 Ready To The Death 🔥\n"
+}
 
 # Procesar argumentos
-while getopts ":m:ui:d:y:h" arg; do
+while getopts ":m:ui:d:y:o:h" arg; do
   case $arg in
   m) machineName="$OPTARG" ;;
   u) doUpdate=true ;;
@@ -202,6 +227,10 @@ while getopts ":m:ui:d:y:h" arg; do
   d)
     machinesByDifficult="$OPTARG"
     byDifficult=true
+    ;;
+  o)
+    machinesBySo="$OPTARG"
+    bySo=true
     ;;
   \?)
     echo "Error: Opción inválida: -$OPTARG, utiliza -h para ayuda" >&2
@@ -232,6 +261,9 @@ elif $doUpdate; then
   exit 0
 elif $byDifficult; then
   listMachinesByDifficult "$machinesByDifficult"
+  exit 0
+elif $bySo; then
+  listMachinesBySo "$machinesBySo"
   exit 0
 elif $hasIP; then
   searchByIP "$ipSearch"
