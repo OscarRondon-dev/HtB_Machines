@@ -12,6 +12,7 @@ grayColour="\e[0;37m\033[1m"
 
 # Función para manejar Ctrl+C
 function ctrl_c() {
+
   echo -e "\n\n ${redColour}[!] Saliendo por Ctrl+C...${endColour}\n"
   tput cnorm && exit 1
 }
@@ -45,13 +46,13 @@ function normalize_difficulty() {
 # Función para mostrar el panel de ayuda
 function helpPanel() {
   echo -e "\n 🆒${yellowColour}[+] Uso: ./htbmachines.sh -m <machineName>${endColour}\n"
+  echo -e "\t 🔄${purpleColour}-u${endColour}${grayColour} Descargar o actualizar los archivos necesarios${endColour}\n"
   echo -e "\t 💻${purpleColour}-m${endColour}${grayColour} Nombre de la máquina Hack The Box${endColour}"
-  echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Busca máquinas por dirección IP${endColour}"
-  echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Lista máquinas por dificultad${endColour}"
-  echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Lista máquinas por sistema operativo${endColour}"
-  echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Abre el enlace de YouTube de la máquina${endColour}"
+  echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Buscar máquinas por dirección IP${endColour}"
+  echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Listar máquinas por dificultad${endColour}"
+  echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Listar máquinas por sistema operativo${endColour}"
+  echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Buscar el enlace de YouTube de una máquina${endColour}"
   echo -e "\t ❓${purpleColour}-h${endColour}${grayColour} Muestra este panel de ayuda${endColour}"
-  echo -e "\t 🔄${purpleColour}-u${endColour}${grayColour} Descarga o actualiza los archivos necesarios${endColour}\n"
   echo -e "\n ${redColour}[!] Dependencias requeridas: curl, js-beautify, moreutils (para sponge), xdg-open${endColour}"
   echo -e "    Instala en Debian/Kali con: sudo apt-get install curl node-js-beautify moreutils xdg-utils\n"
 }
@@ -175,7 +176,6 @@ function listMachinesByDifficult() {
   fi
   echo "$names" | while read -r line; do
     echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}"
-    sleep 1
   done
   echo -e "\n ${greenColour}[+] Quieres ver las propiedades de alguna${endColour}\n${yellowColour}[?] Escribe 'y' para sí o 'n' para no: ${endColour}"
   read -r response
@@ -189,16 +189,18 @@ function listMachinesByDifficult() {
 # Función para listar nombres de máquinas con sistema operativo específico
 function listMachinesBySo() {
   machinesBySo="$1"
-  normalized_so=$(normalize_difficulty "$machinesBySo")
   echo -e "\n ${greenColour}[+] Listando máquinas con sistema operativo:${endColour} ${blueColour}$normalized_so${endColour}\n"
-  names=$(grep -i -B 5 "so: \"$normalized_so\"" bundle.js | grep "name:" | tr -d '"' | tr -d ',' | sed 's/^ *//' | sed 's/^name: *//')
+  names=$(grep -i -B 5 "so: \"$machinesBySo\"" bundle.js | grep "name:" | tr -d '"' | tr -d ',' | sed 's/^ *//' | sed 's/^name: *//')
   if [ -z "$names" ]; then
     echo -e "\n ${redColour}[!] No se encontraron máquinas con este sistema operativo:${endColour} ${blueColour}$normalized_so${endColour}\n"
     exit 1
   fi
   echo "$names" | while read -r line; do
-    echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}"
-    sleep 1
+    case "$machinesBySo" in
+    Linux | linux) echo -e "${yellowColour}Nombre:${endColour} ${redColour}$line${endColour}" ;;
+    Windows | windows) echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}" ;;
+    *) echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}" ;;
+    esac
   done
   echo -e "\n ${greenColour}[+] Quieres ver las propiedades de alguna${endColour}\n${yellowColour}[?] Escribe 'y' para sí o 'n' para no: ${endColour}"
   read -r response
