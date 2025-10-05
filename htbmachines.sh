@@ -26,9 +26,13 @@ showHelp=false
 bundleFile=false
 machineName=""
 hasIP=false
+ipSearch=""
 youtubeLink=false
+youtubeMachineName=""
 byDifficult=false
+machinesByDifficult=""
 bySo=false
+machinesBySo=""
 main_url="https://htbmachines.github.io/bundle.js"
 
 # Función para normalizar dificultades
@@ -66,6 +70,7 @@ function checkBundle() {
     echo -e "\n ${redColour}[!] El archivo bundle.js está vacío, por favor ejecuta el script con la opción -u para descargarlo${endColour}\n"
     exit 1
   fi
+
 }
 
 # Función para descargar o actualizar bundle.js
@@ -128,6 +133,7 @@ function searchMAchine() {
     searchLinkYoutube "$machineName"
   fi
   echo -e "\n 🔥 Ready To The Death 🔥\n"
+
 }
 
 # Función para buscar máquinas por IP
@@ -211,7 +217,33 @@ function listMachinesBySo() {
   fi
   echo -e "\n 🔥 Ready To The Death 🔥\n"
 }
+listMachinesBySoAndDifficult() {
+  machinesBySo="$1"
+  machinesByDifficult="$2"
+  normalized_diff=$(normalize_difficulty "$machinesByDifficult")
+  echo -e "\n ${greenColour}[+] Listando máquinas con sistema operativo:${endColour} ${blueColour}$machinesBySo${endColour} ${greenColour}y dificultad:${endColour} ${blueColour}$normalized_diff${endColour}\n"
+  name=$(grep -i -B 5 "dificultad: \"$normalized_diff\"" bundle.js | grep -i -B 5 "so: \"$machinesBySo\"" | tr -d '"' | tr -d ',' | grep "name:" | sed 's/^ *//' | sed 's/^name: *//')
+  if [ -z "$name" ]; then
+    echo -e "\n ${redColour}[!] No se encontraron máquinas con este sistema operativo y dificultad:${endColour} ${blueColour}$machinesBySo y $normalized_diff${endColour}\n"
+    exit 1
+  fi
+  echo "$name" | while read -r line; do
+    case "$machinesBySo" in
+    Linux | linux) echo -e "${yellowColour}Nombre:${endColour} ${grayColour}$line${endColour}" ;;
+    Windows | windows) echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}" ;;
+    *) echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}" ;;
+    esac
+  done
+  echo -e "\n ${greenColour}[+] Quieres ver las propiedades de alguna${endColour}\n${yellowColour}[?] Escribe 'y' para sí o 'n' para no: ${endColour}"
+  read -r response
+  if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
+    echo -e "\n ${greenColour}[+] Escribe el nombre de la máquina:${endColour}\n"
+    read -r youtubeMachineName
+    searchMAchine "$youtubeMachineName"
+  fi
+  echo -e "\n 🔥 Ready To The Death 🔥\n"
 
+}
 # Procesar argumentos
 while getopts ":m:ui:d:y:o:h" arg; do
   case $arg in
@@ -250,10 +282,9 @@ while getopts ":m:ui:d:y:o:h" arg; do
 done
 
 # Verificar bundle.js para opciones que lo requieren
-if $hasIP || $youtubeLink || [ -n "$machineName" ] || $byDifficult; then
+if $hasIP || $youtubeLink || [ -n "$machineName" ] || $byDifficult || $bySo; then
   checkBundle
 fi
-
 # Ejecutar la acción correspondiente
 if $showHelp; then
   helpPanel
@@ -261,12 +292,16 @@ if $showHelp; then
 elif $doUpdate; then
   updateFiles
   exit 0
+elif $bySo && $byDifficult; then
+  listMachinesBySoAndDifficult "$machinesBySo" "$machinesByDifficult"
+  exit 1
 elif $byDifficult; then
   listMachinesByDifficult "$machinesByDifficult"
   exit 0
 elif $bySo; then
   listMachinesBySo "$machinesBySo"
   exit 0
+
 elif $hasIP; then
   searchByIP "$ipSearch"
   exit 0
