@@ -1,4 +1,4 @@
-🚀 .htbmachines.sh
+#🚀 .htbmachines.sh
 
 .htbmachines.sh es un script en Bash diseñado para facilitar la búsqueda y gestión de máquinas de Hack The Box desde la terminal. Este proyecto te permite buscar máquinas por nombre, IP, dificultad, sistema operativo o habilidades, descargar y actualizar datos automáticamente, y acceder a enlaces de YouTube para write-ups. Perfecto para pentesters, estudiantes de ciberseguridad y entusiastas de CTF en 2025, este script combina simplicidad con potencia, haciendo uso de herramientas modernas para una experiencia fluida. 🛠️
 
