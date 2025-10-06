@@ -42,8 +42,10 @@ En 2025, con el auge de la automatización y la privacidad en ciberseguridad, es
 
 
 <img width="79" height="28" alt="image" src="https://github.com/user-attachments/assets/d347d765-c637-4a44-8cad-07dbda01126f" />
+
 Bash
 Lenguaje principal para scripting
+
 
 
 <img width="78" height="28" alt="image" src="https://github.com/user-attachments/assets/13d80f81-892a-4c4a-b85b-af143e4cdbfd" />
