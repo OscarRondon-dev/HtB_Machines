@@ -33,6 +33,8 @@ byDifficult=false
 machinesByDifficult=""
 bySo=false
 machinesBySo=""
+bySkills=false
+machinesBySkills=""
 main_url="https://htbmachines.github.io/bundle.js"
 
 # Función para normalizar dificultades
@@ -50,14 +52,16 @@ function normalize_difficulty() {
 # Función para mostrar el panel de ayuda
 function helpPanel() {
   echo -e "\n 🆒${yellowColour}[+] Uso: ./htbmachines.sh -m <machineName>${endColour}\n"
-  echo -e "\t 🔄${purpleColour}-u${endColour}${grayColour} Descargar o actualizar los archivos necesarios${endColour}\n"
-  echo -e "\t 💻${purpleColour}-m${endColour}${grayColour} Nombre de la máquina Hack The Box${endColour}"
-  echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Buscar máquinas por dirección IP${endColour}"
-  echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Listar máquinas por dificultad${endColour}"
-  echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Listar máquinas por sistema operativo${endColour}"
-  echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Buscar el enlace de YouTube de una máquina${endColour}"
-  echo -e "\t ❓${purpleColour}-h${endColour}${grayColour} Muestra este panel de ayuda${endColour}"
-  echo -e "\n ${redColour}[!] Dependencias requeridas: curl, js-beautify, moreutils (para sponge), xdg-open${endColour}"
+  echo -e "\t 🔄${purpleColour}-u${endColour}${grayColour} Descargar o Actualizar los Archivos necesarios${endColour}\n"
+  echo -e "\t 💻${purpleColour}-m${endColour}${grayColour} Buscar Por Nombre de la Máquina Hack The Box${endColour}"
+  echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Buscar Máquinas Por Dirección IP${endColour}"
+  echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Buscar Máquinas Por Dificultad${endColour}"
+  echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Buscar Máquinas Por Sistema Operativo${endColour}"
+  echo -e "\t 🖥️${purpleColour}-s${endColour}${grayColour} Buscar Maquina Por Skills${endColour}"
+  echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Buscar el Enlace de YouTube de una máquina${endColour}"
+  echo -e "\t ❓${purpleColour}-h${endColour}${grayColour} Muestra este Panel de Ayuda${endColour}"
+  echo -e "\n 🧐${greenColour}[+] Usa las opciones -d [Dificultad] y -o [Sistema operativo] para buscar por dificultad y sistema operativo ${endColour}\n"
+  echo -e "\n ${redColour}[!] Dependencias requeridas: ${endColour} ${grayColour}curl, js-beautify, moreutils (para sponge), xdg-open${endColour}"
   echo -e "    Instala en Debian/Kali con: sudo apt-get install curl node-js-beautify moreutils xdg-utils\n"
 }
 
@@ -217,6 +221,7 @@ function listMachinesBySo() {
   fi
   echo -e "\n 🔥 Ready To The Death 🔥\n"
 }
+# Función para listar nombres de máquinas con sistema operativo y dificultad específicos
 listMachinesBySoAndDifficult() {
   machinesBySo="$1"
   machinesByDifficult="$2"
@@ -242,10 +247,31 @@ listMachinesBySoAndDifficult() {
     searchMAchine "$youtubeMachineName"
   fi
   echo -e "\n 🔥 Ready To The Death 🔥\n"
+}
 
+# Funcion para listar nombres de máquinas por skills
+function listMachinesBySkills() {
+  machinesBySkills="$1"
+  echo -e "\n ${greenColour}[+] Listando máquinas con la skill:${endColour} ${blueColour}$machinesBySkills${endColour}\n"
+  names=$(grep -i -B 6 "skills: .*${machinesBySkills}.*" bundle.js | grep "name:" | tr -d '"' | tr -d ',' | sed 's/^ *//' | sed 's/^name: *//')
+  if [ -z "$names" ]; then
+    echo -e "\n ${redColour}[!] No se encontraron máquinas con esta skill:${endColour} ${blueColour}$machinesBySkills${endColour}\n"
+    exit 1
+  fi
+  echo "$names" | while read -r line; do
+    echo -e "${yellowColour}Nombre:${endColour} ${blueColour}$line${endColour}"
+  done
+  echo -e "\n ${greenColour}[+] Quieres ver las propiedades de alguna${endColour}\n${yellowColour}[?] Escribe 'y' para sí o 'n' para no: ${endColour}"
+  read -r response
+  if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
+    echo -e "\n ${greenColour}[+] Escribe el nombre de la máquina:${endColour}\n"
+    read -r youtubeMachineName
+    searchMAchine "$youtubeMachineName"
+  fi
+  echo -e "\n 🔥 Ready To The Death 🔥\n"
 }
 # Procesar argumentos
-while getopts ":m:ui:d:y:o:h" arg; do
+while getopts ":m:ui:d:y:o:s:h" arg; do
   case $arg in
   m) machineName="$OPTARG" ;;
   u) doUpdate=true ;;
@@ -265,6 +291,10 @@ while getopts ":m:ui:d:y:o:h" arg; do
   o)
     machinesBySo="$OPTARG"
     bySo=true
+    ;;
+  s)
+    machinesBySkills="$OPTARG"
+    bySkills=true
     ;;
   \?)
     echo "Error: Opción inválida: -$OPTARG, utiliza -h para ayuda" >&2
@@ -307,6 +337,9 @@ elif $hasIP; then
   exit 0
 elif $youtubeLink; then
   searchLinkYoutube "$youtubeMachineName"
+  exit 0
+elif $bySkills; then
+  listMachinesBySkills "$machinesBySkills"
   exit 0
 elif [ -n "$machineName" ]; then
   searchMAchine "$machineName"
