@@ -57,7 +57,7 @@ function helpPanel() {
   echo -e "\t 🛠️${purpleColour}-i${endColour}${grayColour} Buscar Máquinas Por Dirección IP${endColour}"
   echo -e "\t 📡${purpleColour}-d${endColour}${grayColour} Buscar Máquinas Por Dificultad${endColour}"
   echo -e "\t 🖥️${purpleColour}-o${endColour}${grayColour} Buscar Máquinas Por Sistema Operativo${endColour}"
-  echo -e "\t 🖥️${purpleColour}-s${endColour}${grayColour} Buscar Maquina Por Skills${endColour}"
+  echo -e "\t 🖥️${purpleColour}-s${endColour}${grayColour} Buscar Maquina Por Skills(ej: \"Active Directory\") ${endColour}"
   echo -e "\t 📺${purpleColour}-y${endColour}${grayColour} Buscar el Enlace de YouTube de una máquina${endColour}"
   echo -e "\t ❓${purpleColour}-h${endColour}${grayColour} Muestra este Panel de Ayuda${endColour}"
   echo -e "\n 🧐${greenColour}[+] Usa las opciones -d [Dificultad] y -o [Sistema operativo] para buscar por dificultad y sistema operativo ${endColour}\n"
