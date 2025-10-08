@@ -59,7 +59,7 @@ En 2025, con el auge de la automatización y la privacidad en ciberseguridad, es
 
 ## ⚙️ Instalación Rápida
 
-```bash
+
 # Clona el repositorio
 git clone https://github.com/OscarRondon-dev/.htbmachines.sh.git
 cd .htbmachines.sh
@@ -75,17 +75,18 @@ chmod +x .htbmachines.sh
 node -v
 
 
-📚 Uso
+## 📚 Uso
 Ejecuta el script con diferentes opciones para buscar máquinas de Hack The Box:
-./.htbmachines.sh -m "NombreMáquina"        # Buscar por nombre
-./.htbmachines.sh -i "10.10.10.10"          # Buscar por IP
-./.htbmachines.sh -d "Fácil"                # Buscar por dificultad
-./.htbmachines.sh -o "Linux"                # Buscar por sistema operativo
-./.htbmachines.sh -s "Active Directory"     # Buscar por habilidades
-./.htbmachines.sh -y "NombreMáquina"        # Abrir enlace de YouTube
-./.htbmachines.sh -u                        # Actualizar bundle.js
-./.htbmachines.sh -h                        # Mostrar ayuda
 
+
+* `./.htbmachines.sh -m "NombreMáquina"` - Buscar por nombre
+* `./.htbmachines.sh -i "10.10.10.10"` - Buscar por IP
+* `./.htbmachines.sh -d "Fácil"` - Buscar por dificultad
+* `./.htbmachines.sh -o "Linux"` - Buscar por sistema operativo
+* `./.htbmachines.sh -s "Active Directory"` - Buscar por habilidades
+* `./.htbmachines.sh -y "NombreMáquina"` - Abrir enlace de YouTube
+* `./.htbmachines.sh -u` - Actualizar `bundle.js`
+* `./.htbmachines.sh -h` - Mostrar ayuda
 
 <img width="1504" height="465" alt="image" src="https://github.com/user-attachments/assets/4b1d6641-bbcf-4165-9f96-e8da41ac641e" />
 
@@ -97,7 +98,7 @@ Ejecuta el script con diferentes opciones para buscar máquinas de Hack The Box:
 
 
 
-🚀 Despliegue
+## 🚀 Despliegue
 El script es standalone y no requiere despliegue en servidores como Vercel o Netlify. Simplemente clona y ejecuta en tu máquina local. Para entornos personalizados:
 
 # Copia el script a tu sistema
@@ -108,15 +109,15 @@ htbmachines -h
 
 
 
-📜 Licencia
+## 📜 Licencia
 Este proyecto está licenciado bajo la Licencia MIT. Libre para uso comercial, modificación y distribución.Consulta el archivo LICENSE para más detalles.
 
-🙌 Agradecimientos
+## 🙌 Agradecimientos
 
 A s4vitar
 A la comunidad de Hack The Box por inspirar este proyecto.
 
 
 
-🖼️ Footer
+## 🖼️ Footer
 ¿Encontraste un problema o tienes una idea? Abre un issue o participa en discussions.⭐ ¡Si te gusta, dale una estrella! ⭐Copyright © 2025 OscarRondon-dev. Todos los derechos reservados.
